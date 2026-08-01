@@ -1,0 +1,13 @@
+{
+    "recommendations": [
+        "anysphere.csharp",
+        "ms-dotnettools.vscode-dotnet-runtime",
+        "zlorn.vstuc",
+        "visualstudiotoolsforunity.vstuc"
+    ],
+    "unwantedRecommendations": [
+        "dotnetdev-kr-custom.csharp",
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.csdevkit"
+    ]
+}

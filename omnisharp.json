@@ -1,0 +1,26 @@
+{
+  "MsBuild": {
+    "UseLegacySdkResolver": true,
+    "LoadProjectsOnDemand": false,
+    "ToolsVersion": null
+  },
+  "RoslynExtensionsOptions": {
+    "EnableAnalyzersSupport": true,
+    "EnableImportCompletion": true
+  },
+  "FormattingOptions": {
+    "EnableEditorConfigSupport": true,
+    "OrganizeImports": true
+  },
+  "FileOptions": {
+    "SystemExcludeSearchPatterns": [
+      "**/bin/**",
+      "**/obj/**",
+      "**/.git/**",
+      "**/Library/**",
+      "**/Temp/**",
+      "**/Logs/**",
+      "**/*.Player.csproj"
+    ]
+  }
+}

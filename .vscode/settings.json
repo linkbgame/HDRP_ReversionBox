@@ -1,0 +1,55 @@
+{
+  // --- C# 语言服务：使用 Cursor 内置 Roslyn（不依赖 OmniSharp 下载）---
+  "dotnet.defaultSolution": "HDRP_ReversionBox.sln",
+  "dotnet.server.useOmnisharp": false,
+  "dotnet.backgroundAnalysis.analyzerDiagnosticsScope": "openFiles",
+  "dotnet.backgroundAnalysis.compilerDiagnosticsScope": "openFiles",
+  "dotnet.formatting.organizeImportsOnFormat": false,
+  "dotnet.completion.showCompletionItemsFromUnimportedNamespaces": true,
+
+  // --- Unity 扩展（zlorn.vstuc）---
+  "vstuc.enableCodeModel": true,
+  "vstuc.enableMessageCompletion": true,
+  "vstuc.refreshOnSave": false,
+
+  // --- 编辑器 ---
+  "[csharp]": {
+    "editor.defaultFormatter": "anysphere.csharp",
+    "editor.formatOnSave": false,
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true
+  },
+  "editor.gotoLocation.multipleDefinitions": "goto",
+  "editor.semanticHighlighting.enabled": true,
+
+  // --- 隐藏 Unity 生成目录 ---
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/Library": true,
+    "**/Temp": true,
+    "**/obj": true,
+    "**/Logs": true,
+    "**/*.csproj.lscache": true
+  },
+  "search.exclude": {
+    "**/Library": true,
+    "**/Temp": true,
+    "**/obj": true,
+    "**/Logs": true
+  },
+  "files.watcherExclude": {
+    "**/Library/**": true,
+    "**/Temp/**": true,
+    "**/obj/**": true,
+    "**/Logs/**": true
+  },
+
+  // --- Unity 资产关联 ---
+  "files.associations": {
+    "*.asmdef": "json",
+    "*.asmref": "json",
+    "*.uxml": "xml",
+    "*.uss": "css"
+  }
+}
