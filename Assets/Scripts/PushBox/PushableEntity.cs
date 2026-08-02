@@ -13,6 +13,8 @@ public class PushableEntity : MonoBehaviour
     public LayerMask blockingLayer;
     private bool isMoving = false;
 
+    public bool IsMoving => isMoving;
+
     /// <summary>
     /// ��ͨ���������ӵĵݹ��������
     /// </summary>
@@ -72,6 +74,11 @@ public class PushableEntity : MonoBehaviour
     public void Move(Vector3 direction)
     {
         StartCoroutine(ExecuteMove(transform.position + direction));
+    }
+
+    public void MoveToWorld(Vector3 target)
+    {
+        StartCoroutine(ExecuteMove(target));
     }
 
     private IEnumerator ExecuteMove(Vector3 target)

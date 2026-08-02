@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using AI.Base;
 using DG.Tweening;
 using UnityEngine;
@@ -117,20 +118,47 @@ public class PlayerAgent : MonoBehaviour, IPlayerAgent
             return;
         }
 
-        Vector3 targetPos = transform.position + dir;
-        Collider[] hitColliders = Physics.OverlapBox(targetPos, new Vector3(0.4f, 0.4f, 0.4f), Quaternion.identity, blockingLayer);
-
-        if (hitColliders.Length == 0)
+        GridBoard board = GridBoard.Instance;
+        if (board == null)
         {
-            StartCoroutine(ExecuteMove(targetPos));
+            Debug.LogWarning("Player cannot move: GridBoard.Instance is null.", this);
             return;
         }
 
-        PushableEntity box = hitColliders[0].GetComponent<PushableEntity>();
-        if (box != null && box.gameObject.layer == LayerMask.NameToLayer("YellowBox") && box.CanPush(dir))
+        GridOccupant playerOccupant = GetComponent<GridOccupant>();
+        if (playerOccupant == null)
         {
-            PushChain(targetPos, dir);
-            StartCoroutine(ExecuteMove(targetPos));
+            Debug.LogWarning("Player cannot move: missing GridOccupant.", this);
+            return;
+        }
+
+        if (!GridBoard.TryVectorToGridDirection(dir, out GridCoord gridDirection))
+        {
+            return;
+        }
+
+        GridCoord targetCoord = playerOccupant.CurrentCoord + gridDirection;
+        GridCell targetCell = board.GetCell(targetCoord);
+        if (targetCell.IsWall)
+        {
+            return;
+        }
+
+        if (!targetCell.HasOccupant)
+        {
+            MovePlayerOnGrid(board, playerOccupant, targetCoord);
+            return;
+        }
+
+        if (targetCell.OccupantType == GridOccupantType.YellowBox &&
+            board.TryMovePlayerPushChain(targetCoord, gridDirection, out List<GridOccupant> movedBoxes, out _))
+        {
+            if (!MovePlayerOnGrid(board, playerOccupant, targetCoord))
+            {
+                return;
+            }
+
+            AnimateMovedBoxes(board, movedBoxes);
         }
         else
         {
@@ -183,6 +211,34 @@ public class PlayerAgent : MonoBehaviour, IPlayerAgent
         }
         PushChain(position + direction, direction);
         box.Move(direction);
+    }
+
+    private bool MovePlayerOnGrid(GridBoard board, GridOccupant playerOccupant, GridCoord targetCoord)
+    {
+        if (!board.TryMoveOccupant(playerOccupant, targetCoord, out string error))
+        {
+            Debug.LogWarning(error, this);
+            return false;
+        }
+
+        Vector3 targetWorld = board.GridToWorld(targetCoord, transform.position.y);
+        StartCoroutine(ExecuteMove(targetWorld));
+        return true;
+    }
+
+    private void AnimateMovedBoxes(GridBoard board, List<GridOccupant> movedBoxes)
+    {
+        foreach (GridOccupant movedBox in movedBoxes)
+        {
+            PushableEntity pushable = movedBox.GetComponent<PushableEntity>();
+            if (pushable == null)
+            {
+                continue;
+            }
+
+            Vector3 targetWorld = board.GridToWorld(movedBox.CurrentCoord, pushable.transform.position.y);
+            pushable.MoveToWorld(targetWorld);
+        }
     }
 
     /* private IEnumerator ExecuteMove(Vector3 target)

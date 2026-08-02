@@ -66,6 +66,27 @@ public class GridBoard : MonoBehaviour
         return cells.TryGetValue(coord, out cell);
     }
 
+    public bool TryGetOccupant(GridCoord coord, out GridOccupant occupant)
+    {
+        occupant = GetCell(coord).occupant;
+        return occupant != null;
+    }
+
+    public static bool TryVectorToGridDirection(Vector3 direction, out GridCoord gridDirection)
+    {
+        gridDirection = GridCoord.zero;
+
+        int x = Mathf.RoundToInt(direction.x);
+        int z = Mathf.RoundToInt(direction.z);
+        if (Mathf.Abs(x) + Mathf.Abs(z) != 1)
+        {
+            return false;
+        }
+
+        gridDirection = new GridCoord(x, z);
+        return true;
+    }
+
     public void SetTerrain(GridCoord coord, GridTerrain terrain)
     {
         GridCell cell = GetCell(coord);
@@ -135,9 +156,86 @@ public class GridBoard : MonoBehaviour
         return true;
     }
 
+    public bool TryMovePlayerPushChain(
+        GridCoord boxCoord,
+        GridCoord direction,
+        out List<GridOccupant> movedOccupants,
+        out string error)
+    {
+        movedOccupants = new List<GridOccupant>();
+        error = null;
+
+        if (!TryBuildPlayerPushChain(boxCoord, direction, movedOccupants, out error))
+        {
+            movedOccupants.Clear();
+            return false;
+        }
+
+        for (int i = movedOccupants.Count - 1; i >= 0; i--)
+        {
+            GridOccupant occupant = movedOccupants[i];
+            GridCoord targetCoord = occupant.CurrentCoord + direction;
+            if (!TryMoveOccupant(occupant, targetCoord, out error))
+            {
+                movedOccupants.Clear();
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public bool HasFlag(GridCoord coord, GridCellFlags flag)
     {
         return GetCell(coord).HasFlag(flag);
+    }
+
+    private bool TryBuildPlayerPushChain(
+        GridCoord startCoord,
+        GridCoord direction,
+        List<GridOccupant> chain,
+        out string error)
+    {
+        error = null;
+        GridCoord coord = startCoord;
+
+        while (true)
+        {
+            GridCell cell = GetCell(coord);
+            if (cell.IsWall)
+            {
+                error = $"Cannot push chain into Wall at {coord}.";
+                return false;
+            }
+
+            GridOccupant occupant = cell.occupant;
+            if (occupant == null)
+            {
+                return chain.Count > 0;
+            }
+
+            if (occupant.OccupantType != GridOccupantType.YellowBox)
+            {
+                error = $"Cannot push occupant '{occupant.name}' of type {occupant.OccupantType} at {coord}.";
+                return false;
+            }
+
+            PushableEntity pushable = occupant.GetComponent<PushableEntity>();
+            if (pushable == null)
+            {
+                error = $"Cannot push '{occupant.name}' at {coord}: missing PushableEntity.";
+                return false;
+            }
+
+            if (pushable.IsMoving)
+            {
+                error = $"Cannot push '{occupant.name}' at {coord}: it is already moving.";
+                return false;
+            }
+
+            chain.Add(occupant);
+            coord += direction;
+        }
     }
 
     private void OnDrawGizmosSelected()
