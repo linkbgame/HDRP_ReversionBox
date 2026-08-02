@@ -27,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
         m_horizontalAxis = Input.GetAxisRaw("Horizontal");
         m_verticalAxis = Input.GetAxisRaw("Vertical");
 
-        //MARKER ÈôÁ½ÖáÍ¬Ê±ÓĞÊäÈë£¬ÔòÈ¡ÏûÒÆ¶¯£¨¿ÉÒÔ×èÖ¹Ğ±Ïò»òÓÅÏÈ³åÍ»£©
+        //MARKER è‹¥ä¸¤è½´åŒæ—¶æœ‰è¾“å…¥ï¼Œåˆ™å–æ¶ˆç§»åŠ¨ï¼ˆå¯ä»¥é˜»æ­¢æ–œå‘æˆ–ä¼˜å…ˆå†²çªï¼‰
         if (m_horizontalAxis != 0f && m_verticalAxis != 0f)
         {
             m_horizontalAxis = 0f;
@@ -48,7 +48,7 @@ public class PlayerMovement : MonoBehaviour
             TryMove(m_velocity);
         }
 
-        //MARKER ´ÓÉÏÍùÏÂ²»Âú×ãÌõ¼ş°¤¸ö¼ì²éÒ»±é
+        //MARKER ä»ä¸Šå¾€ä¸‹ä¸æ»¡è¶³æ¡ä»¶æŒ¨ä¸ªæ£€æŸ¥ä¸€é
         if (m_velocity.x > 0f)
         {
             transform.rotation = Quaternion.Euler(0, 90, 0);
@@ -67,10 +67,10 @@ public class PlayerMovement : MonoBehaviour
         }      
     }
 
-    //CORE PlayerMovement <- WallMerge <- ProjectorMovement ÔÚÇ½ÉÏ¼ì²âÄÜ·ñ¸´Ô­
+    //CORE PlayerMovement <- WallMerge <- ProjectorMovement åœ¨å¢™ä¸Šæ£€æµ‹èƒ½å¦å¤åŸ
     public bool CanRecoverAt(Vector3 position, Vector3 direction)
     {
-        //STEP 1 Ì½²âÄ¿±êµãÊÇ·ñÓĞ¶«Î÷
+        //STEP 1 æ¢æµ‹ç›®æ ‡ç‚¹æ˜¯å¦æœ‰ä¸œè¥¿
         Collider[] hitColliders = Physics.OverlapBox(position, new Vector3(0.4f, 0.4f, 0.4f), Quaternion.identity, blockingLayer);
 
         if (hitColliders.Length == 0)
@@ -78,7 +78,7 @@ public class PlayerMovement : MonoBehaviour
             return true;
         }
 
-        //STEP 2 Èç¹ûÓĞ¶«Î÷£¬¼ì²éÊÇ²»ÊÇÄÜÍÆµÄÏä×Ó
+        //STEP 2 å¦‚æœæœ‰ä¸œè¥¿ï¼Œæ£€æŸ¥æ˜¯ä¸æ˜¯èƒ½æ¨çš„ç®±å­
         PushableEntity box = hitColliders[0].GetComponent<PushableEntity>();
         int mask = (1 << LayerMask.NameToLayer("YellowBox")) | (1 << LayerMask.NameToLayer("BlueBox"));
 
@@ -87,12 +87,12 @@ public class PlayerMovement : MonoBehaviour
             return box.RecoverCanPush(direction);
         }
 
-        //STEP 3 Ç½±ÚÔò²»ÄÜ¸´Ô­
+        //STEP 3 å¢™å£åˆ™ä¸èƒ½å¤åŸ
         return false;
     }
 
     /// <summary>
-    /// ¸´Ô­ÍÆÁ¦ÍÆÏä×Ó£¬´«½øÀ´µÄ¾ÍÊÇ½ÇÉ«¸´Ô­µÄÎ»ÖÃ£¬Ö±½ÓÅĞ¶ÏÓĞÃ»ÓĞÏä×Ó£¬ÔÙÊ¹ÓÃ·¨ÏßÅĞ¶Ï
+    /// å¤åŸæ¨åŠ›æ¨ç®±å­ï¼Œä¼ è¿›æ¥çš„å°±æ˜¯è§’è‰²å¤åŸçš„ä½ç½®ï¼Œç›´æ¥åˆ¤æ–­æœ‰æ²¡æœ‰ç®±å­ï¼Œå†ä½¿ç”¨æ³•çº¿åˆ¤æ–­
     /// </summary>
     public void TryRecoverMove(Vector3 position, Vector3 direction)
     {
@@ -104,7 +104,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            //Debug.Log("½øÈëµ½ÁË¸´Ô­ÍÆÏä×Ó");
+            //Debug.Log("è¿›å…¥åˆ°äº†å¤åŸæ¨ç®±å­");
             //Debug.Log($"Hit object: {hitColliders[0].gameObject.name}", hitColliders[0].gameObject);
             PushableEntity box = hitColliders[0].GetComponent<PushableEntity>();
             int mask = (1 << LayerMask.NameToLayer("YellowBox")) | (1 << LayerMask.NameToLayer("BlueBox"));
@@ -119,7 +119,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     /// <summary>
-    /// ½ÇÉ«ÆÕÍ¨ÒÆ¶¯µÄ´¦Àí
+    /// è§’è‰²æ™®é€šç§»åŠ¨çš„å¤„ç†
     /// </summary>
     private void TryMove(Vector3 direction)
     {
@@ -143,12 +143,12 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
-                //TODO ²¥·ÅÎŞ·¨ÒÆ¶¯µÄÒôĞ§
+                //TODO æ’­æ”¾æ— æ³•ç§»åŠ¨çš„éŸ³æ•ˆ
             }
         }
     }
 
-    //MARKER ÏÈÈÃÔ¶´¦Ïä×ÓÒÆ¶¯£¬ÔÙÈÃ½ü´¦Ïä×ÓÒÆ¶¯£¬×îºóÈÃÍæ¼ÒÒÆ¶¯£¬ÏñÁ´ÌõÒ»Ñù
+    //MARKER å…ˆè®©è¿œå¤„ç®±å­ç§»åŠ¨ï¼Œå†è®©è¿‘å¤„ç®±å­ç§»åŠ¨ï¼Œæœ€åè®©ç©å®¶ç§»åŠ¨ï¼Œåƒé“¾æ¡ä¸€æ ·
     private void PushChain(Vector3 position, Vector3 direction)
     {
         Collider[] hits = Physics.OverlapBox(position, new Vector3(0.4f, 0.4f, 0.4f), Quaternion.identity, blockingLayer);
@@ -168,7 +168,7 @@ public class PlayerMovement : MonoBehaviour
     {
         m_isMove = true;
 
-        if (GameManager.Instance != null)//MARKER Ã¿´ÎÒÆ¶¯¶¼²¥·ÅÒôĞ§£¬·ÅÔÚÕâÀï¿ÉÒÔ±£Ö¤ÎŞÂÛÊÇÆÕÍ¨ÒÆ¶¯»¹ÊÇ±»ÍÆ×ÅÒÆ¶¯¶¼»áÓĞÉùÒô
+        if (GameManager.Instance != null)//MARKER æ¯æ¬¡ç§»åŠ¨éƒ½æ’­æ”¾éŸ³æ•ˆï¼Œæ”¾åœ¨è¿™é‡Œå¯ä»¥ä¿è¯æ— è®ºæ˜¯æ™®é€šç§»åŠ¨è¿˜æ˜¯è¢«æ¨ç€ç§»åŠ¨éƒ½ä¼šæœ‰å£°éŸ³
         {
             GameManager.Instance.PlaySFX(GameSFX.Move);
         }
@@ -187,7 +187,7 @@ public class PlayerMovement : MonoBehaviour
 
         m_isMove = false;
 
-        if (GameManager.Instance != null)//CORE Íæ¼ÒÃ¿Ò»´ÎÒÆ¶¯ºó¶¼»á¼ì²â»ú¹ØÓĞÃ»ÓĞ±»Ñ¹
+        if (GameManager.Instance != null)//CORE ç©å®¶æ¯ä¸€æ¬¡ç§»åŠ¨åéƒ½ä¼šæ£€æµ‹æœºå…³æœ‰æ²¡æœ‰è¢«å‹
         {
             GameManager.Instance.CheckAllPlates();
         }

@@ -72,6 +72,30 @@ public class GridBoard : MonoBehaviour
         return occupant != null;
     }
 
+    public bool HasOccupantAt(GridCoord coord)
+    {
+        return GetCell(coord).HasOccupant;
+    }
+
+    public bool HasOccupantTypeAt(GridCoord coord, GridOccupantType type)
+    {
+        return GetCell(coord).OccupantType == type;
+    }
+
+    public bool IsAnyOccupantAt(GridCoord coord, params GridOccupantType[] types)
+    {
+        GridOccupantType occupantType = GetCell(coord).OccupantType;
+        for (int i = 0; i < types.Length; i++)
+        {
+            if (occupantType == types[i])
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static bool TryVectorToGridDirection(Vector3 direction, out GridCoord gridDirection)
     {
         gridDirection = GridCoord.zero;
