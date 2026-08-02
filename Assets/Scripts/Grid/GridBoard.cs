@@ -61,7 +61,7 @@ public class GridBoard : MonoBehaviour
         return cell;
     }
 
-    public bool TryGetCell(GridCoord coord, out GridCell cell)
+    /* public bool TryGetCell(GridCoord coord, out GridCell cell)
     {
         return cells.TryGetValue(coord, out cell);
     }
@@ -80,7 +80,7 @@ public class GridBoard : MonoBehaviour
     public bool HasOccupantTypeAt(GridCoord coord, GridOccupantType type)
     {
         return GetCell(coord).OccupantType == type;
-    }
+    } */
 
     public bool IsAnyOccupantAt(GridCoord coord, params GridOccupantType[] types)
     {
@@ -98,11 +98,11 @@ public class GridBoard : MonoBehaviour
 
     public static bool TryVectorToGridDirection(Vector3 direction, out GridCoord gridDirection)
     {
-        gridDirection = GridCoord.zero;
+        gridDirection = GridCoord.Zero;
 
         int x = Mathf.RoundToInt(direction.x);
         int z = Mathf.RoundToInt(direction.z);
-        if (Mathf.Abs(x) + Mathf.Abs(z) != 1)
+        if (Mathf.Abs(x) + Mathf.Abs(z) != 1)//MARKER 方向向量不能超过1个单位，同时只能有一个方向的输入
         {
             return false;
         }
@@ -111,6 +111,7 @@ public class GridBoard : MonoBehaviour
         return true;
     }
 
+    // GridBootstrapper
     public void SetTerrain(GridCoord coord, GridTerrain terrain)
     {
         GridCell cell = GetCell(coord);
@@ -118,6 +119,7 @@ public class GridBoard : MonoBehaviour
         cells[coord] = cell;
     }
 
+    // GridBootstrapper
     public void AddFlag(GridCoord coord, GridCellFlags flag)
     {
         GridCell cell = GetCell(coord);
@@ -125,6 +127,7 @@ public class GridBoard : MonoBehaviour
         cells[coord] = cell;
     }
 
+    // GridBootstrapper
     public bool TryRegisterOccupant(GridOccupant occupant, GridCoord coord, out string error)
     {
         error = null;
@@ -148,12 +151,7 @@ public class GridBoard : MonoBehaviour
         return true;
     }
 
-    public bool CanOccupy(GridCoord coord, GridOccupant occupant)
-    {
-        GridCell cell = GetCell(coord);
-        return cell.CanAccept(occupant);
-    }
-
+    // PlayerAgent
     public bool TryMoveOccupant(GridOccupant occupant, GridCoord targetCoord, out string error)
     {
         error = null;
@@ -166,7 +164,7 @@ public class GridBoard : MonoBehaviour
         }
 
         GridCell targetCell = GetCell(targetCoord);
-        if (!targetCell.CanAccept(occupant))
+        if (!targetCell.CanAcceptOneNewOccupant(occupant))
         {
             error = $"Cannot move {occupant.name} to {targetCoord}: cell is blocked.";
             return false;
@@ -180,6 +178,7 @@ public class GridBoard : MonoBehaviour
         return true;
     }
 
+    // PlayerAgent
     public bool TryMovePlayerPushChain(
         GridCoord boxCoord,
         GridCoord direction,

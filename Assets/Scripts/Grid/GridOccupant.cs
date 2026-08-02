@@ -14,6 +14,7 @@ public class GridOccupant : MonoBehaviour
         occupantType = type;
     }
 
+    //TODO 初始化和设置坐标两个方法重复了
     public void Initialize(GridBoard board, GridCoord coord)
     {
         currentCoord = coord;

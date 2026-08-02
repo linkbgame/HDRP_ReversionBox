@@ -12,7 +12,7 @@ public struct GridCoord : IEquatable<GridCoord>
         this.z = z;
     }
 
-    public static GridCoord zero => new GridCoord(0, 0);
+    public static GridCoord Zero => new GridCoord(0, 0);
 
     public static GridCoord operator +(GridCoord a, GridCoord b)
     {
