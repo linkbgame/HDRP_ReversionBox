@@ -19,11 +19,6 @@ public class ExitGate : MonoBehaviour
         m_anim.enabled = false;
     }
 
-    private void Update()
-    {
-        TryWinByGrid();
-    }
-
     public void OpenGate()
     {
         if (isOpen)
@@ -46,59 +41,14 @@ public class ExitGate : MonoBehaviour
     //MARKER Stay 处理胜利，其他处理玩家和引导视效
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
+        if (isOpen && other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            TryWinByGrid();
+            if (!GameManager.Instance.CanWinNow())
+            {
+                return;
+            }
+            GameManager.Instance.Win();
         }
-    }
-
-    private void TryWinByGrid()
-    {
-        if (!isOpen || GameManager.Instance == null)
-        {
-            return;
-        }
-
-        if (!IsPlayerOnGateByGrid())
-        {
-            return;
-        }
-
-        if (!GameManager.Instance.CanWinNow())
-        {
-            return;
-        }
-
-        GameManager.Instance.Win();
-    }
-
-    private bool IsPlayerOnGateByGrid()
-    {
-        GridBoard board = GridBoard.Instance;
-        if (board == null)
-        {
-            return false;
-        }
-
-        PlayerFSM player = GameManager.Instance != null ? GameManager.Instance.player : null;
-        if (player == null)
-        {
-            player = FindObjectOfType<PlayerFSM>();
-        }
-
-        if (player == null)
-        {
-            return false;
-        }
-
-        GridOccupant playerOccupant = player.GetComponent<GridOccupant>();
-        if (playerOccupant == null)
-        {
-            return false;
-        }
-
-        GridCoord gateCoord = board.WorldToGrid(transform.position);
-        return playerOccupant.CurrentCoord == gateCoord;
     }
 
     private void OnTriggerEnter(Collider other)

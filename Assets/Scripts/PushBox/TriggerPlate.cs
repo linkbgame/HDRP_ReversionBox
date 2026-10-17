@@ -39,19 +39,11 @@ public class TriggerPlate : MonoBehaviour
 
     public bool GetIsPressed()
     {
-        GridBoard board = GridBoard.Instance;
-        if (board == null)
-        {
-            return false;
-        }
-
-        GridCoord coord = board.WorldToGrid(transform.position);
-        return board.IsAnyOccupantAt(
-            coord,
-            GridOccupantType.Player,
-            GridOccupantType.YellowBox,
-            GridOccupantType.BlueBox
-        );
+        Collider[] hits = Physics.OverlapBox(transform.position + Vector3.up * 0.5f,
+                                            new Vector3(0.4f, 0.1f, 0.4f),
+                                            Quaternion.identity,
+                                            detectionLayer);
+        return hits.Length > 0;
     }
 
     private void OnTriggerEnter(Collider other)
